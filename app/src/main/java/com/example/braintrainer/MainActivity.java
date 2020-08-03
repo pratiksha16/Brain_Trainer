@@ -2,6 +2,7 @@ package com.example.braintrainer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
+import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
     Button startButton;
@@ -26,11 +28,15 @@ public class MainActivity extends AppCompatActivity {
 
     TextView resultTextView;
     TextView pointsTextView;
+    TextView highscoreView;
+
 
     int locationOfCorrectAnswer;
     int score=0;
     int numOfQuestion=0;
+    int highScore=0;
     ArrayList<Integer> answers= new ArrayList<Integer>();
+    SharedPreferences preferences;
     public void playAgain(View view){
         button0.setEnabled(true);
         button1.setEnabled(true);
@@ -56,10 +62,21 @@ public class MainActivity extends AppCompatActivity {
                 play.setVisibility(View.VISIBLE);
                 timerTextView.setText("0s");
                 resultTextView.setText("Your score:"+Integer.toString(score)+ "/"+ Integer.toString(numOfQuestion));
+                if(score > highScore){
+                    highscoreView.setText("High Score:"+Integer.toString(score));
+                    SharedPreferences.Editor editor=preferences.edit();
+                    editor.putInt("HIGH_SCORE",score);
+                    editor.commit();
+                }
+                else{
+                    highscoreView.setText("High Score:"+Integer.toString(highScore));
+                }
+
                 button0.setEnabled(false);
                 button1.setEnabled(false);
                 button2.setEnabled(false);
                 button3.setEnabled(false);
+
 
 
 
@@ -126,17 +143,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setHighScore(){
+
+    }
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences= getSharedPreferences("highscore", Context.MODE_PRIVATE);
+        highScore=preferences.getInt("HIGH_SCORE",0);
+
+
+
         startButton= findViewById(R.id.startButton);
          sumTextView= findViewById(R.id.sumTextView);
         resultTextView= findViewById(R.id.resultTextView);
         pointsTextView= findViewById(R.id.pointsTextView);
         timerTextView= findViewById(R.id.timerTextView);
+        highscoreView= findViewById(R.id.highScore);
         play= findViewById(R.id.play);
 
         button0= findViewById(R.id.button0);
@@ -144,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
          button2= findViewById(R.id.button2);
         button3= findViewById(R.id.button3);
         relativeLayout= findViewById(R.id.gameRelativeLayout);
+
 
 
 
